@@ -1,47 +1,80 @@
+# 新建一个Python脚本生成HTML文件（保存后发送给好友）
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write('''
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
     <style>
         body {
             margin: 0;
-            overflow: hidden;
-            background: black;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: none;
         }
-        #text {
-            position: absolute;
+        #stage1 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+        }
+        .btn {
+            padding: 20px 40px;
+            font-size: 30px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            transform: scale(1.1);
+        }
+        #stage2 {
+            display: none;
             color: red;
             font-size: 40px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px white;
-            animation: jump 0.5s infinite alternate;
+            animation: glitch 1s infinite;
+            text-align: center;
         }
-        @keyframes jump {
-            from { transform: translateY(0); }
-            to { transform: translateY(-20px); }
+        @keyframes glitch {
+            0% { text-shadow: 2px 2px #0ff; }
+            50% { text-shadow: -2px -2px #f0f; }
+            100% { text-shadow: 2px 2px #0ff; }
         }
     </style>
 </head>
 <body>
-    <div id="text">少爷，你无法关闭</div>
+    <div id="stage1">
+        <button class="btn" onclick="showStage2()">你不敢点吧</button>
+    </div>
+    <div id="stage2">获取信息中...</div>
 
     <script>
-        // 文字随机移动
-        function moveText() {
-            const text = document.getElementById('text');
-            text.style.left = Math.random() * (window.innerWidth - 200) + 'px';
-            text.style.top = Math.random() * (window.innerHeight - 50) + 'px';
-        }
-        setInterval(moveText, 1000);
+        function showStage2() {
+            document.getElementById("stage1").style.display = "none";
+            document.getElementById("stage2").style.display = "block";
 
-        // 禁用右键和键盘快捷键
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if (e.ctrlKey || e.key === 'F12' || e.key === 'Escape') {
-                e.preventDefault();
-            }
-        });
+            // 添加全屏干扰效果
+            setInterval(() => {
+                document.body.style.background =
+                    `rgb(${Math.random()*255},${Math.random()*255},${Math.random()*255})`;
+            }, 50);
+
+            // 禁用常见操作
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'F12' || e.ctrlKey || e.metaKey) e.preventDefault();
+            });
+            document.addEventListener('contextmenu', e => e.preventDefault());
+        }
     </script>
 </body>
 </html>
+''')
+
+print("已生成 index.html 文件")
